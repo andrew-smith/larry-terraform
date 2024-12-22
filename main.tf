@@ -22,7 +22,9 @@ module "network" {
 }
 
 module "box" {
-  source = "./box"
+  
+  source = "./box-basic"
+
 
   compartment_id = local.oci_tenancy_id
   ad_name        = module.network.ad_name
@@ -30,8 +32,11 @@ module "box" {
 
   shape = "VM.Standard.A1.Flex"
 
-  ssh_key          = var.ssh_key
-  ssh_ca_key       = var.ssh_ca_key
-  compose_repo     = var.compose_repo
-  compose_sops_key = var.compose_sops_key
+  ssh_keys = data.http.andrews_keys.response_body
+}
+
+
+
+data "http" "andrews_keys" {
+    url = "https://github.com/andrew-smith.keys"
 }
